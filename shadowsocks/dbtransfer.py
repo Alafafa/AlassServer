@@ -4,7 +4,6 @@
 import logging
 import cymysql
 import time
-import sys
 import socket
 import config
 import json
@@ -44,7 +43,6 @@ class DbTransfer(object):
         cli = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         cli.settimeout(2)
         cli.sendto('transfer: {}', ('%s' % (config.MANAGE_BIND_IP), config.MANAGE_PORT))
-        bflag = False
         while True:
             data, addr = cli.recvfrom(1500)
             if data == 'e':
@@ -59,7 +57,6 @@ class DbTransfer(object):
         dt_transfer = self.get_servers_transfer()
 
         if config.PANEL_VERSION == 'V2':
-            import time
             query_head = 'UPDATE user'
             query_sub_when = ''
             query_sub_when2 = ''
@@ -146,7 +143,7 @@ class DbTransfer(object):
         conn = cymysql.connect(host=config.MYSQL_HOST, port=config.MYSQL_PORT, user=config.MYSQL_USER,
                                passwd=config.MYSQL_PASS, db=config.MYSQL_DB, charset='utf8')
         cur = conn.cursor()
-        cur.execute("SELECT port, u, d, transfer_enable, passwd, switch, enable FROM user")
+        cur.execute("SELECT port, u, d, transfer_enable, passwd, switch, enable FROM user where node_id in (0, %d)" % (config.NODE_ID))
         rows = []
         for r in cur.fetchall():
             rows.append(list(r))
@@ -178,9 +175,7 @@ class DbTransfer(object):
                     # print('add: {"server_port": %s, "password":"%s"}'% (row[0], row[4]))
 
     @staticmethod
-    def thread_db():
-        import socket
-        import time
+    def thread_pull():
         timeout = 30
         socket.setdefaulttimeout(timeout)
         while True:
@@ -197,8 +192,6 @@ class DbTransfer(object):
 
     @staticmethod
     def thread_push():
-        import socket
-        import time
         timeout = 30
         socket.setdefaulttimeout(timeout)
         while True:

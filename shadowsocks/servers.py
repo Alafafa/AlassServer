@@ -51,7 +51,7 @@ def main():
     }
     t = thread.start_new_thread(manager.run, (configer,))
     time.sleep(1)
-    t = thread.start_new_thread(DbTransfer.thread_db, ())
+    t = thread.start_new_thread(DbTransfer.thread_pull, ())
     time.sleep(1)
     t = thread.start_new_thread(DbTransfer.thread_push, ())
 
