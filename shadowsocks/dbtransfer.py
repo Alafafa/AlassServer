@@ -143,7 +143,7 @@ class DbTransfer(object):
         conn = cymysql.connect(host=config.MYSQL_HOST, port=config.MYSQL_PORT, user=config.MYSQL_USER,
                                passwd=config.MYSQL_PASS, db=config.MYSQL_DB, charset='utf8')
         cur = conn.cursor()
-        cur.execute("SELECT port, u, d, transfer_enable, passwd, switch, enable FROM user where node_id in (0, %d)" % (config.NODE_ID))
+        cur.execute("SELECT port, u, d, transfer_enable, passwd, switch, enable FROM user where node_id in (0, %s)" % (config.NODE_ID))
         rows = []
         for r in cur.fetchall():
             rows.append(list(r))
@@ -179,14 +179,14 @@ class DbTransfer(object):
         timeout = 30
         socket.setdefaulttimeout(timeout)
         while True:
-            logging.info('db loop')
+            logging.info('db pull loop')
             try:
                 rows = DbTransfer.get_instance().pull_db_all_user()
                 DbTransfer.del_server_out_of_bound_safe(rows)
             except Exception as e:
                 import traceback
                 traceback.print_exc()
-                logging.warn('db thread except:%s' % e)
+                logging.warn('db pull thread except:%s' % e)
             finally:
                 time.sleep(config.CHECKTIME)
 
@@ -195,12 +195,12 @@ class DbTransfer(object):
         timeout = 30
         socket.setdefaulttimeout(timeout)
         while True:
-            logging.info('db loop2')
+            logging.info('db push loop')
             try:
                 DbTransfer.get_instance().push_db_all_user()
             except Exception as e:
                 import traceback
                 traceback.print_exc()
-                logging.warn('db thread except:%s' % e)
+                logging.warn('db push thread except:%s' % e)
             finally:
                 time.sleep(config.SYNCTIME)
