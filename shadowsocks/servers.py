@@ -19,9 +19,9 @@ import sys
 import os
 import logging
 import thread
-import config
 import signal
 import time
+import config_as as config
 
 if config.LOG_ENABLE:
     logging.basicConfig(format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',datefmt='%Y, %b %d %a %H:%M:%S',filename=config.LOG_FILE,level=config.LOG_LEVEL)

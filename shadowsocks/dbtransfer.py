@@ -5,9 +5,9 @@ import logging
 import cymysql
 import time
 import socket
-import config
 import json
 import urllib2, urllib
+import config_as as config
 
 
 class DbTransfer(object):
