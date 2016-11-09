@@ -29,26 +29,26 @@ import sys
 import argparse
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='See README')
-    parser.add_argument('-c', '--count', default=3, type=int,
-                        help='with how many failure times it should be '
-                             'considered as an attack')
-    config = parser.parse_args()
-    ips = {}
-    banned = set()
-    for line in sys.stdin:
-        if 'can not parse header when' in line:
-            ip = line.split()[-1].split(':')[0]
-            if ip not in ips:
-                ips[ip] = 1
-                print(ip)
-                sys.stdout.flush()
-            else:
-                ips[ip] += 1
-            if ip not in banned and ips[ip] >= config.count:
-                if ip != '127.0.0.1':
-                     banned.add(ip)
-                     cmd = 'iptables -I INPUT -s %s -j DROP' % ip
-                     print(cmd, file=sys.stderr)
-                     sys.stderr.flush()
-                     os.system(cmd)
+	parser = argparse.ArgumentParser(description='See README')
+	parser.add_argument('-c', '--count', default=3, type=int,
+	                    help='with how many failure times it should be '
+	                         'considered as an attack')
+	config = parser.parse_args()
+	ips = {}
+	banned = set()
+	for line in sys.stdin:
+		if 'can not parse header when' in line:
+			ip = line.split()[-1].split(':')[0]
+			if ip not in ips:
+				ips[ip] = 1
+				print(ip)
+				sys.stdout.flush()
+			else:
+				ips[ip] += 1
+			if ip not in banned and ips[ip] >= config.count:
+				if ip != '127.0.0.1':
+					banned.add(ip)
+					cmd = 'iptables -I INPUT -s %s -j DROP' % ip
+					print(cmd, file=sys.stderr)
+					sys.stderr.flush()
+					os.system(cmd)

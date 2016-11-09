@@ -5,7 +5,7 @@ MYSQL_HOST = 'iflit.alass.ca'
 MYSQL_PORT = 3306
 MYSQL_USER = 'dbuser'
 MYSQL_PASS = 'password'
-MYSQL_DB = 'ss_panel'
+MYSQL_DB = 'alass_panel'
 
 MANAGE_PASS = 'themanagepass'
 #if you want manage in other server you should set this value to global ip
